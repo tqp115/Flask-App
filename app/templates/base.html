@@ -1,3 +1,21 @@
+<!doctype html>
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - Visualization</title>
+      {% else %}
+      <title>Welcome to a Visualization Website!</title>
+      {% endif %}
+    </head>
+    <body>
+        <div>Links: <a href="/index">Home</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
+
+
+<!-- Old code
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,3 +40,4 @@
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
+-->
