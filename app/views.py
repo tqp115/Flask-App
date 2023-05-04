@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
-from app import app
+from app import app, db
 from app.forms import LoginForm
-
+from app.models import User, DataSet
 
 @app.route('/')
 @app.route('/index')
@@ -27,3 +27,7 @@ def login():
             form.username.data, form.remember_me.data))
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
+
+@app.shell_context_processor
+def make_shell_context():
+    return {'db' : db, 'User' : User, 'Dataset' : DataSet}
