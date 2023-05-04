@@ -21,13 +21,13 @@ class User(db.Model):
         return f"User('{self.username}', '{self.email}')"
 
 
-class Post(db.Model):
+class DataSet(db.Model):
+    """Model for data sets."""
+    __tablename__ = 'datasets'
+
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    body = db.Column(db.Text, nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    author = db.relationship('User', backref=db.backref('posts', lazy=True))
+    name = db.Column(db.String(100), nullable=False)
+    file = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
-        return f"Post('{self.title}', '{self.date_created}')"
+        return f"DataSet('{self.name}', '{self.file}')"
