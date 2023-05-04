@@ -5,3 +5,7 @@ from app import app
 def index():
     data = "hello"
     return render_template('index.html', data=data)
+
+@app.route('Login')
+def index():
+    return render_template('base.html')
