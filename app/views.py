@@ -58,6 +58,23 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-#@app.shell_context_processor
-#def make_shell_context():
-    #return {'db' : db, 'User' : User, 'Dataset' : DataSet}
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = [
+        {'author': user, 'body': 'Test post #1'},
+        {'author': user, 'body': 'Test post #2'}
+    ]
+    return render_template('user.html', user=user, posts=posts)
+
+@app.route('/admin')
+@login_required
+def admin():
+    #person = current_user.
+    if current_user.is_admin:
+        user_list = User.query.order_by(User.date_created)
+        return render_template("admin.html", user_list=user_list)
+    else:
+        flash("You must be an admin to access this page.")
+        return redirect(url_for('index'))

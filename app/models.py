@@ -10,7 +10,7 @@ def load_user(id):
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    account_type = db.Column(db.String(20))
+    is_admin = db.Column(db.Boolean, default = False)
     username = db.Column(db.String(64), unique=True, index = True)
     email = db.Column(db.String(120), unique=True, index = True)
     password = db.Column(db.String(128))
