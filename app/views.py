@@ -78,3 +78,12 @@ def admin():
     else:
         flash("You must be an admin to access this page.")
         return redirect(url_for('index'))
+    
+@app.route('/delete/<int:id>')
+def delete(id):
+    user_to_delete = User.query.get_or_404(id)
+    db.session.delete(user_to_delete)
+    db.session.commit()
+    flash("User Deleted.")
+    user_list = User.query.order_by(User.date_created)
+    return render_template("admin.html", user_list=user_list)
