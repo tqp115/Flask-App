@@ -7,10 +7,10 @@ from flask_migrate import Migrate
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object(Config)
-db = SQLAlchemy
+db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from app import views
+from app import views, models
 
 #load config file
 
