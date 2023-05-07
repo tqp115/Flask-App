@@ -5,7 +5,7 @@
     <h1>List of Users</h1>
 {% for user_list in user_list %}
     {{ user_list.id }}. {{ user_list.username }} - {{ user_list.email }} - 
-    <a href="{{ url_for('delete', id=user_list.id)}}">Delete</a>
+    <a href="{{ url_for('delete', id=user_list.id)}}">Delete</a><br/>
 {% endfor %}
 
 {% endblock %}

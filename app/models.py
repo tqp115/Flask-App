@@ -16,7 +16,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(128))
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
-    uploads = db.relationship('DataSet', backref = 'author', lazy = 'dynamic')
+    uploads = db.relationship('DataSet', backref = 'author', lazy = 'dynamic', cascade='all, delete')
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"

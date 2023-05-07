@@ -11,7 +11,7 @@ from app.models import User, DataSet
 def index():
     if request.method == 'POST':
         file = request.files['file']
-        upload = DataSet(name=file.name, file=file.read())
+        upload = DataSet(name=file.filename, file=file.read(), user_id=current_user.id)
         db.session.add(upload)
         db.session.commit()
 
@@ -81,6 +81,6 @@ def delete(id):
     user_to_delete = User.query.get_or_404(id)
     db.session.delete(user_to_delete)
     db.session.commit()
-    flash("User Deleted.")
+    flash("The user and their datasets have been deleted.")
     user_list = User.query.order_by(User.date_created)
     return render_template("admin.html", user_list=user_list)
