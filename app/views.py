@@ -5,22 +5,19 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app.models import User, DataSet
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    user = {'username': 'Test'}
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Hello World'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'Lorem ipsum'
-        }
-    ]
-    return render_template('index.html', title='Home Page', posts=posts)
+    if request.method == 'POST':
+        file = request.files['file']
+        upload = DataSet(name=file.name, file=file.read())
+        db.session.add(upload)
+        db.session.commit()
+
+        return f"Uploaded: {file.filename}"
+    
+    return render_template('index.html', title='Home Page')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
