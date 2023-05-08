@@ -4,6 +4,7 @@ from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app.models import User, DataSet
+import pandas as pd
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -68,7 +69,6 @@ def user(username):
 @app.route('/admin')
 @login_required
 def admin():
-    #person = current_user.
     if current_user.is_admin:
         user_list = User.query.order_by(User.date_created)
         return render_template("admin.html", user_list=user_list)
@@ -84,3 +84,13 @@ def delete(id):
     flash("The user and their datasets have been deleted.")
     user_list = User.query.order_by(User.date_created)
     return render_template("admin.html", user_list=user_list)
+
+@app.route('/data')
+def get_data():
+    data = pd.read_csv('2_col.csv')
+    #print(data.head())
+    return jsonify(data.to_dict(orient='records'))
+
+@app.route('/chart')
+def chart():
+    return render_template('chart.html')
