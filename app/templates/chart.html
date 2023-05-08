@@ -1,61 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chart.js Example</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visualization</title>
+    <style type="text/css">
+        .chartBox {
+            width: 700px;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="chart"></canvas>
+    <div class="chartBox">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <input type="file" id="uploadfile" accept=".csv">
+    <button id="uploadconfirm">Upload File</button>
+
+    <hr>
+    <button onclick="updateChart('monthData')">Month Data</button>
+    <button onclick="updateChart('averageData')">Average Data</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     <script>
-        fetch('/data')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                const labels = data.map(row => row.Month);
-                const values = data.map(row => row.Average);
-                console.log(labels, values)
-                const ctx = document.getElementById('chart').getContext('2d');
-                const chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Chart Data',
-                            data: values,
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            },
-                            title: {
-                                display: true,
-                                text: 'Chart.js Example'
-                            }
-                        },
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Month'
-                                }
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Average'
-                                },
-                                beginAtZero: true
-                            }
-                        }
+        const monthData = [];
+        const averageData = [];
+        const uploadconfirm = document.getElementById('uploadconfirm').
+        addEventListener('click', () => {
+            Papa.parse(document.getElementById('uploadfile').files[0],
+            {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                transformHeader: function(header) {
+                // Remove white spaces and double quotes around headers
+                    return header.trim().replace(/"/g, '');
+                },
+                transform: function(value, header) {
+                    // Remove white spaces around values
+                    return value.trim();
+                },
+                complete: function(results) {
+                   // console.log(results);
+                   // console.log(results.data[0].Average);
+                    for (i = 0; i < results.data.length; i++) {
+                        monthData.push(results.data[i].Month);
+                        averageData.push(results.data[i].Average);
                     }
-                });
+                    console.log(monthData);
+                    console.log(averageData);
+                }
             });
+        });
+
+        // Setup block
+        const data = {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        // Config block
+        const config = {
+            type: 'bar',
+            data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+        // Init Render block
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+
+        function updateChart(label) {
+            myChart.data.datasets[0].label = label;
+            if (label === "monthData") {
+                myChart.data.datasets[0].data = monthData;
+            }
+            if (label === "averageData") {
+                myChart.data.datasets[0].data = averageData;
+            }
+            myChart.update();
+        };
+
     </script>
+
 </body>
 </html>
+
+{% endblock %}
